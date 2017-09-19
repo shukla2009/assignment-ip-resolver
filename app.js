@@ -12,7 +12,7 @@ app.get('/', function (req, res) {
 
 app.get('/ip/:ip', function (req, res) {
     logger.info('resolving : ' + req.params.ip);
-    if ('127.0.0.1' === req.params.ip || '1'===req.params.ip) {
+    if ('127.0.0.1' === req.params.ip || '1' === req.params.ip) {
         return res.send({location: 'localhost'});
     }
     let options = {
@@ -28,10 +28,11 @@ app.get('/ip/:ip', function (req, res) {
             message += chunk;
         });
         result.on('end', function () {
-            if (result.statusCode !== 200) {
+            if (result.statusCode === 200) {
                 return res.send(JSON.parse(message));
+            } else {
+                res.status(404).send(`Not able to resolve ip ${req.params.ip}`);
             }
-            res.status(404).send('Not Found');
         });
     });
     request.end();
